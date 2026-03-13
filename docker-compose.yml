@@ -1,0 +1,41 @@
+services:
+  mysql:
+    container_name: mysql-db
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_USER: user
+      MYSQL_DATABASE: authdb
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      retries: 5
+      timeout: 5s
+      interval: 10s
+    
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    environment:
+      DATABASE_URL: mysql+pymysql://user:password@mysql:3306/authdb
+      JWT_SECRET_KEY: super-secret-change-in-prod
+    restart: always
+    depends_on:
+       mysql:
+        condition: service_healthy
+    ports:
+       - "5001:5001"
+
+volumes:
+  mysql_data:
+  
+
+
