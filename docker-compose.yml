@@ -34,6 +34,36 @@ services:
     ports:
        - "5001:5001"
 
+  product-service:
+    build:
+      context: ./services/product-service
+      dockerfile: Dockerfile
+    container_name: prod-service
+    environment:
+        DATABASE_URL: mysql+pymysql://user:password@mysql:3306/authdb
+        JWT_SECRET_KEY: super-secret-change-in-prod
+    restart: always
+    depends_on:
+        mysql:
+         condition: service_healthy
+    ports:
+        - "5002:5002"
+
+  order-service:
+    build:
+      context: ./services/order-service
+      dockerfile: Dockerfile
+    container_name: order-service
+    environment:
+      DATABASE_URL: mysql+pymysql://user:password@mysql:3306/authdb
+      JWT_SECRET_KEY: super-secret-change-in-prod
+    restart: always
+    depends_on: 
+      mysql:
+        condition: service_healthy
+    ports:
+      - "5003:5003"
+
 volumes:
   mysql_data:
   
