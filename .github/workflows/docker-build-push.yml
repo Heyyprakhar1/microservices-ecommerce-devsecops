@@ -18,7 +18,7 @@ jobs:
             - name: build & push
               uses: docker/build-push-action@v6
               with:
-                  context: .
+                  context: ./services/auth-service
                   push: true
                   tags: |
                       ${{ vars.DOCKER_USER }}/auth-service:latest
@@ -39,7 +39,7 @@ jobs:
             - name: build & push
               uses: docker/build-push-action@v6
               with:
-                  context: .
+                  context: ./services/order-service
                   push: true
                   tags: |
                       ${{ vars.DOCKER_USER }}/order-service:latest
@@ -60,7 +60,7 @@ jobs:
             - name: build & push
               uses: docker/build-push-action@v6
               with:
-                  context: .
+                  context: ./services/product-service
                   push: true
                   tags: |
                       ${{ vars.DOCKER_USER }}/product-service:latest
