@@ -12,39 +12,36 @@ jobs:
               with:
                   username: ${{ vars.DOCKER_USER }}
                   password: ${{ secrets.DOCKER_PASSWORD }}
-            - name: pull fresh-image
-              run: docker pull ${{ vars.DOCKER_USER}}/auth-service:latest
+            - name: pull auth-service image
+              run: docker pull ${{ vars.DOCKER_USER}}/e-commerce-site-project-auth-service:latest
 
-            - name: pull fresh-image
-              run: docker pull ${{ vars.DOCKER_USER}}/order-service:latest
+            - name: pull order-service image
+              run: docker pull ${{ vars.DOCKER_USER}}/e-commerce-site-project-order-service:latest
 
-            - name: pull fresh-image
-              run: docker pull ${{ vars.DOCKER_USER}}/product-service:latest
+            - name: pull product-service image
+              run: docker pull ${{ vars.DOCKER_USER}}/e-commerce-site-project-product-service:latest
 
             - name: scan-auth-service
-              uses: aquasecurity/trivy-action@0.35.0
+              uses: aquasecurity/trivy-action@0.28.0
               with:
-                  image-ref: |
-                      ${{ vars.DOCKER_USER }}/auth-service:latest
+                  image-ref: ${{ vars.DOCKER_USER }}/e-commerce-site-project-auth-service:latest
                   format: table
                   severity: CRITICAL, HIGH
                   exit-code: 1
                   ignore-unfixed: true
             - name: scan-order-service
-              uses: aquasecurity/trivy-action@0.35.0
+              uses: aquasecurity/trivy-action@0.28.0
               with:
-                  image-ref: |
-                      ${{ vars.DOCKER_USER }}/order-service:latest
+                  image-ref: ${{ vars.DOCKER_USER }}/e-commerce-site-project-order-service:latest
                   format: table
                   severity: CRITICAL, HIGH
                   exit-code: 1
                   ignore-unfixed: true
 
             - name: scan-product-service
-              uses: aquasecurity/trivy-action@0.35.0
+              uses: aquasecurity/trivy-action@0.28.0
               with:
-                  image-ref: |
-                      ${{ vars.DOCKER_USER }}/product-service:latest
+                  image-ref: ${{ vars.DOCKER_USER }}/e-commerce-site-project-product-service:latest
                   format: table
                   severity: CRITICAL, HIGH
                   exit-code: 1
