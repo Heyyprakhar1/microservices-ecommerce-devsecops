@@ -1,0 +1,21 @@
+name: dependency-scan
+on: workflow_dispatch
+
+jobs:
+    dependency-scan:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v4
+
+            - name: set-up python
+              uses: actions/setup-python@v5
+
+            - name: installing pip-audit
+              run: pip install pip-audit
+
+            - name: running pip-audit
+              run: |
+                  pip-audit -r services/auth-service/requirements.txt
+                  pip-audit -r services/order-service/requirements.txt
+                  pip-audit -r services/product-service/requirements.txt
