@@ -13,7 +13,11 @@ jobs:
           python-version: "3.13"
 
       - name: Install dependencies
-        run: pip install -r ./services/requirements.txt
+        run: |
+          pip install flake8
+          pip install -r services/auth-service/requirements/txt
+          pip install -r services/order-service/requirements/txt
+          pip install -r services/product-service/requirements/txt
 
       - name: Run flake8
         run: flake8 services/
