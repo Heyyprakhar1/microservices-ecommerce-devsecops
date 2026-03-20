@@ -29,6 +29,8 @@ jobs:
                   severity: CRITICAL,HIGH
                   exit-code: 1
                   ignore-unfixed: true
+                  trivyignores: .trivyignore
+
             - name: scan-order-service
               uses: aquasecurity/trivy-action@0.35.0
               with:
@@ -37,6 +39,7 @@ jobs:
                   severity: CRITICAL,HIGH
                   exit-code: 1
                   ignore-unfixed: true
+                  trivyignores: .trivyignore
 
             - name: scan-product-service
               uses: aquasecurity/trivy-action@0.35.0
@@ -46,3 +49,4 @@ jobs:
                   severity: CRITICAL,HIGH
                   exit-code: 1
                   ignore-unfixed: true
+                  trivyignores: .trivyignore
