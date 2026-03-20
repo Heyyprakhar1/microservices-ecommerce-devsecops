@@ -3,7 +3,9 @@ from . import db
 from .models import Product
 import jwt
 
+
 product_bp = Blueprint("product", __name__)
+
 
 def verify_token(request):
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
@@ -15,9 +17,11 @@ def verify_token(request):
     except jwt.InvalidTokenError:
         return None
 
+
 @product_bp.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "product-service healthy"}), 200
+
 
 @product_bp.route("/", methods=["GET"])
 def get_products():
@@ -28,12 +32,14 @@ def get_products():
         products = Product.query.all()
     return jsonify({"products": [p.to_dict() for p in products]}), 200
 
+
 @product_bp.route("/<int:product_id>", methods=["GET"])
 def get_product(product_id):
     product = Product.query.get(product_id)
     if not product:
         return jsonify({"error": "Product not found"}), 404
     return jsonify({"product": product.to_dict()}), 200
+
 
 @product_bp.route("/", methods=["POST"])
 def create_product():
@@ -56,6 +62,7 @@ def create_product():
     db.session.commit()
     return jsonify({"message": "Product created", "product": product.to_dict()}), 201
 
+
 @product_bp.route("/<int:product_id>", methods=["PUT"])
 def update_product(product_id):
     user = verify_token(request)
@@ -75,6 +82,7 @@ def update_product(product_id):
 
     db.session.commit()
     return jsonify({"message": "Product updated", "product": product.to_dict()}), 200
+
 
 @product_bp.route("/<int:product_id>", methods=["DELETE"])
 def delete_product(product_id):

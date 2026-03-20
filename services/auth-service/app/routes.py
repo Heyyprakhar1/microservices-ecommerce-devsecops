@@ -5,11 +5,14 @@ import jwt
 import datetime
 from flask import current_app
 
+
 auth_bp = Blueprint("auth", __name__)
+
 
 @auth_bp.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "auth-service healthy"}), 200
+
 
 @auth_bp.route("/register", methods=["POST"])
 def register():
@@ -31,6 +34,7 @@ def register():
     db.session.commit()
 
     return jsonify({"message": "User registered successfully", "user": user.to_dict()}), 201
+
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
@@ -56,6 +60,7 @@ def login():
     )
 
     return jsonify({"message": "Login successful", "token": token, "user": user.to_dict()}), 200
+
 
 @auth_bp.route("/verify", methods=["POST"])
 def verify_token():

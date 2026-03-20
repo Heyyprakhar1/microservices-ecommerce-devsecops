@@ -1,6 +1,7 @@
 from . import db
 from datetime import datetime
 
+
 class Order(db.Model):
     __tablename__ = "orders"
 
@@ -10,6 +11,7 @@ class Order(db.Model):
     total      = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     items      = db.relationship("OrderItem", backref="order", lazy=True)
+
 
     def to_dict(self):
         return {
@@ -21,6 +23,7 @@ class Order(db.Model):
             "items":      [i.to_dict() for i in self.items]
         }
 
+
 class OrderItem(db.Model):
     __tablename__ = "order_items"
 
@@ -29,6 +32,7 @@ class OrderItem(db.Model):
     product_id = db.Column(db.Integer, nullable=False)
     quantity   = db.Column(db.Integer, nullable=False)
     price      = db.Column(db.Float, nullable=False)
+
 
     def to_dict(self):
         return {

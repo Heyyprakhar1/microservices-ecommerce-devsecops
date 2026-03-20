@@ -3,7 +3,9 @@ from . import db
 from .models import Order, OrderItem
 import jwt
 
+
 order_bp = Blueprint("order", __name__)
+
 
 def verify_token(request):
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
@@ -15,9 +17,11 @@ def verify_token(request):
     except jwt.InvalidTokenError:
         return None
 
+
 @order_bp.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "order-service healthy"}), 200
+
 
 @order_bp.route("/", methods=["POST"])
 def create_order():
@@ -47,6 +51,7 @@ def create_order():
     db.session.commit()
     return jsonify({"message": "Order placed", "order": order.to_dict()}), 201
 
+
 @order_bp.route("/", methods=["GET"])
 def get_orders():
     user = verify_token(request)
@@ -55,6 +60,7 @@ def get_orders():
 
     orders = Order.query.filter_by(user_id=user["user_id"]).all()
     return jsonify({"orders": [o.to_dict() for o in orders]}), 200
+
 
 @order_bp.route("/<int:order_id>", methods=["GET"])
 def get_order(order_id):
@@ -66,6 +72,7 @@ def get_order(order_id):
     if not order:
         return jsonify({"error": "Order not found"}), 404
     return jsonify({"order": order.to_dict()}), 200
+
 
 @order_bp.route("/<int:order_id>/status", methods=["PUT"])
 def update_status(order_id):

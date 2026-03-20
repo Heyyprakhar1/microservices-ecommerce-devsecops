@@ -1,6 +1,7 @@
 from . import db
 from datetime import datetime
 
+
 class Product(db.Model):
     __tablename__ = "products"
 
@@ -11,6 +12,7 @@ class Product(db.Model):
     stock       = db.Column(db.Integer, default=0)
     category    = db.Column(db.String(100), nullable=True)
     created_at  = db.Column(db.DateTime, default=datetime.utcnow)
+
 
     def to_dict(self):
         return {
