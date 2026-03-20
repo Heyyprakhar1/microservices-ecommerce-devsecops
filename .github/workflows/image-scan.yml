@@ -13,19 +13,19 @@ jobs:
                   username: ${{ vars.DOCKER_USER }}
                   password: ${{ secrets.DOCKER_PASSWORD }}
             - name: pull fresh-image
-              run: docker pull ${{ vars.DOCKER_USER}}/auth-service:${{ github.sha}}
+              run: docker pull ${{ vars.DOCKER_USER}}/auth-service:latest
 
             - name: pull fresh-image
-              run: docker pull ${{ vars.DOCKER_USER}}/order-service:${{ github.sha}}
+              run: docker pull ${{ vars.DOCKER_USER}}/order-service:latest
 
             - name: pull fresh-image
-              run: docker pull ${{ vars.DOCKER_USER}}/product-service:${{ github.sha}}
+              run: docker pull ${{ vars.DOCKER_USER}}/product-service:latest
 
             - name: scan-auth-service
               uses: aquasecurity/trivy-action@0.35.0
               with:
                   image-ref: |
-                      ${{ vars.DOCKER_USER }}/auth-service:${{ github.sha}}
+                      ${{ vars.DOCKER_USER }}/auth-service:latest
                   format: table
                   severity: CRITICAL, HIGH
                   exit-code: 1
@@ -34,7 +34,7 @@ jobs:
               uses: aquasecurity/trivy-action@0.35.0
               with:
                   image-ref: |
-                      ${{ vars.DOCKER_USER }}/order-service:${{ github.sha}}
+                      ${{ vars.DOCKER_USER }}/order-service:latest
                   format: table
                   severity: CRITICAL, HIGH
                   exit-code: 1
@@ -44,7 +44,7 @@ jobs:
               uses: aquasecurity/trivy-action@0.35.0
               with:
                   image-ref: |
-                      ${{ vars.DOCKER_USER }}/product-service:${{ github.sha}}
+                      ${{ vars.DOCKER_USER }}/product-service:latest
                   format: table
                   severity: CRITICAL, HIGH
                   exit-code: 1
