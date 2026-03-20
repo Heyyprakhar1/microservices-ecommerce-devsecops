@@ -13,7 +13,6 @@ auth_bp = Blueprint("auth", __name__)
 def health():
     return jsonify({"status": "auth-service healthy"}), 200
 
-
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
@@ -52,8 +51,8 @@ def login():
         {
             "user_id": user.id,
             "username": user.username,
-            "exp": datetime.datetime.utcnow() + 
-            datetime.timedelta(seconds=current_app.config["JWT_ACCESS_TOKEN_EXPIRES"])
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=current_app.config
+            ["JWT_ACCESS_TOKEN_EXPIRES"])
         },
         current_app.config["JWT_SECRET_KEY"],
         algorithm="HS256"
