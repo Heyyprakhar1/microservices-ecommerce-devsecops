@@ -1,0 +1,46 @@
+name: server_deployment
+on:
+    workflow_dispatch:
+        inputs:
+            docker-tag:
+                required: true
+                type: string
+
+jobs:
+    server_deployment:
+        runs-on: ubuntu-latest
+        steps:
+            - name: code checkout
+              uses: actions/checkout@v4
+
+            - name: Deployment to server && create a folder "Project"
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  key: ${{ secrets.SERVER_SSH_KEY }}
+                  username: ${{ secrets.SERVER_SSH_USER }}
+                  script: |
+                      echo "Tests are done & I am deploying my E-commerce-site on the server"
+                      mkdir -p Project
+
+            - name: copy the docker-compose file
+              uses: appleboy/scp-action@v1.0.0
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  key: ${{ secrets.SERVER_SSH_KEY }}
+                  username: ${{ secrets.SERVER_SSH_USER }}
+                  source: docker-compose.yml
+                  target: ~/Project
+
+            - name: Deploy to Server & run the app
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.SERVER_HOST }}
+                  key: ${{ secrets.SERVER_SSH_KEY }}
+                  username: ${{ secrets.SERVER_SSH_USER }}
+                  script: |
+                      echo "Running the app"
+                      export DOCKER_USER="${{ vars.DOCKER_USER}}"
+                      export DOCKER_TAG="${{ inputs.docker-tag }}"
+                      echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ vars.DOCKER_USER }} --password-stdin
+                      cd ~/Project && docker compose down && docker compose up -d --force-recreate --pull always

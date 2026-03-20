@@ -20,9 +20,7 @@ services:
       interval: 10s
     
   auth-service:
-    build:
-      context: ./services/auth-service
-      dockerfile: Dockerfile
+    image: ${DOCKER_USER}/e-commerce-site-project-auth-service:${DOCKER_TAG:-latest}
     container_name: auth-service
     environment:
       DATABASE_URL: mysql+pymysql://user:password@mysql:3306/authdb
@@ -35,9 +33,7 @@ services:
        - "5001:5001"
 
   product-service:
-    build:
-      context: ./services/product-service
-      dockerfile: Dockerfile
+    image: ${DOCKER_USER}/e-commerce-site-project-prod-service:${DOCKER_TAG:-latest}
     container_name: prod-service
     environment:
         DATABASE_URL: mysql+pymysql://user:password@mysql:3306/authdb
@@ -50,9 +46,7 @@ services:
         - "5002:5002"
 
   order-service:
-    build:
-      context: ./services/order-service
-      dockerfile: Dockerfile
+    image: ${DOCKER_USER}/e-commerce-site-project-order-service:${DOCKER_TAG:-latest}
     container_name: order-service
     environment:
       DATABASE_URL: mysql+pymysql://user:password@mysql:3306/authdb
@@ -66,6 +60,3 @@ services:
 
 volumes:
   mysql_data:
-  
-
-
