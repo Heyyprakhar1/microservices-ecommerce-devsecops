@@ -7,6 +7,8 @@ jobs:
         steps:
             - name: code-checkout
               uses: actions/checkout@v4
+            - name: Docker login
+              uses: docker/login-action@v3
               with:
                   username: ${{ vars.DOCKER_USER }}
                   password: ${{ secrets.DOCKER_PASSWORD }}
@@ -19,12 +21,29 @@ jobs:
             - name: pull fresh-image
               run: docker pull ${{ vars.DOCKER_USER}}/product-service:${{ github.sha}}
 
-            - name: scan-image
+            - name: scan-auth-service
               uses: aquasecurity/trivy-action@0.35.0
               with:
                   image-ref: |
                       ${{ vars.DOCKER_USER }}/auth-service:${{ github.sha}}
+                  format: table
+                  severity: CRITICAL, HIGH
+                  exit-code: 1
+                  ignore-unfixed: true
+            - name: scan-order-service
+              uses: aquasecurity/trivy-action@0.35.0
+              with:
+                  image-ref: |
                       ${{ vars.DOCKER_USER }}/order-service:${{ github.sha}}
+                  format: table
+                  severity: CRITICAL, HIGH
+                  exit-code: 1
+                  ignore-unfixed: true
+
+            - name: scan-product-service
+              uses: aquasecurity/trivy-action@0.35.0
+              with:
+                  image-ref: |
                       ${{ vars.DOCKER_USER }}/product-service:${{ github.sha}}
                   format: table
                   severity: CRITICAL, HIGH
