@@ -26,7 +26,7 @@ jobs:
               with:
                   image-ref: ${{ vars.DOCKER_USER }}/e-commerce-site-project-auth-service:latest
                   format: table
-                  severity: CRITICAL, HIGH
+                  severity: CRITICAL,HIGH
                   exit-code: 1
                   ignore-unfixed: true
             - name: scan-order-service
@@ -34,7 +34,7 @@ jobs:
               with:
                   image-ref: ${{ vars.DOCKER_USER }}/e-commerce-site-project-order-service:latest
                   format: table
-                  severity: CRITICAL, HIGH
+                  severity: CRITICAL,HIGH
                   exit-code: 1
                   ignore-unfixed: true
 
