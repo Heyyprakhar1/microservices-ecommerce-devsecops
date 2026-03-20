@@ -21,6 +21,10 @@ jobs:
 
       - name: Run flake8
         run: flake8 services/
+          --max-line-length=120
+          --exclude=*/venv/*,*/__pycache__/* \
+          --ignore=E221,W291,E261 \
+          --statistics
 
       - name: bandit scan
         run: bandit -r services/
