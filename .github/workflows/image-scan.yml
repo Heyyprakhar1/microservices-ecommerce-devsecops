@@ -1,0 +1,32 @@
+name: image-scan
+on: workflow_dispatch
+
+jobs:
+    image-scan:
+        runs-on: ubuntu-latest
+        steps:
+            - name: code-checkout
+              uses: actions/checkout@v4
+              with:
+                  username: ${{ vars.DOCKER_USER }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
+            - name: pull fresh-image
+              run: docker pull ${{ vars.DOCKER_USER}}/auth-service:${{ github.sha}}
+
+            - name: pull fresh-image
+              run: docker pull ${{ vars.DOCKER_USER}}/order-service:${{ github.sha}}
+
+            - name: pull fresh-image
+              run: docker pull ${{ vars.DOCKER_USER}}/product-service:${{ github.sha}}
+
+            - name: scan-image
+              uses: aquasecurity/trivy-actions@0.35.0
+              with:
+                  image-ref: |
+                      ${{ vars.DOCKER_USER }}/auth-service:${{ github.sha}}
+                      ${{ vars.DOCKER_USER }}/order-service:${{ github.sha}}
+                      ${{ vars.DOCKER_USER }}/product-service:${{ github.sha}}
+                  format: table
+                  severity: CRITICAL, HIGH
+                  exit-code: 1
+                  ignore-unfixed: true
