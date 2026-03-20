@@ -52,8 +52,9 @@ def login():
         {
             "user_id": user.id,
             "username": user.username,
-            "exp": datetime.datetime.utcnow() + datetime.timedelta
-                (seconds=current_app.config["JWT_ACCESS_TOKEN_EXPIRES"])
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(
+                seconds=current_app.config["JWT_ACCESS_TOKEN_EXPIRES"]
+                 )
         },
         current_app.config["JWT_SECRET_KEY"],
         algorithm="HS256"
