@@ -1,0 +1,25 @@
+name: dockerfile scan
+on:
+    workflow_dispatch:
+
+jobs:
+    dockerfile-scan:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v4
+
+            - name: scan auth-service dockerfile
+              uses: hadolint/hadolint-actions@v3.1.0
+              with:
+                  dockerfile: services/auth-service/Dockerfile
+
+            - name: scan order-service dockerfile
+              uses: hadolint/hadolint-actions@v3.1.0
+              with:
+                  dockerfile: services/order-service/Dockerfile
+
+            - name: scan product-service dockerfile
+              uses: hadolint/hadolint-actions@v3.1.0
+              with:
+                  dockerfile: services/product-service/Dockerfile
