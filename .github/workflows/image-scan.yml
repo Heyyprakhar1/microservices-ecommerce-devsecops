@@ -20,7 +20,7 @@ jobs:
               run: docker pull ${{ vars.DOCKER_USER}}/product-service:${{ github.sha}}
 
             - name: scan-image
-              uses: aquasecurity/trivy-actions@0.35.0
+              uses: aquasecurity/trivy-action@0.35.0
               with:
                   image-ref: |
                       ${{ vars.DOCKER_USER }}/auth-service:${{ github.sha}}
