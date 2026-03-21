@@ -1,5 +1,5 @@
 name: code-quality
-on: workflow_dispatch
+on: workflow_call
 jobs:
   code-quality:
     runs-on: ubuntu-latest

@@ -1,0 +1,37 @@
+name: DevSecOps Pipeline
+on: workflow_dispatch
+
+jobs:
+    code-quality-scan:
+        uses: ./.github/workflows/code_quality.yml
+
+    dependency-scan:
+        uses: ./.github/workflows/dependency_scan.yml
+
+    secrets-scan:
+        uses: ./.github/workflows/secrets-scan.yml
+
+    dockerfile-scan:
+        uses: ./.github/workflows/dockerfile-scan.yml
+
+    docker-build-push:
+        needs:
+            [
+                code-quality-scan,
+                dockerfile-scan,
+                image-scan,
+                secrets-scan,
+                dependency-scan,
+            ]
+        uses: ./.github/workflows/docker-build-push.yml
+        secrets: inherit
+
+    image-scan:
+        uses: ./.github/workflows/image-scan.yml
+
+    deploy-to-server:
+        needs: image-scan
+        uses: ./.github/workflows/deploy_to_server.yml
+        with:
+            docker-tag: ${{ github.sha }}
+        secrets: inherit

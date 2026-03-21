@@ -1,10 +1,19 @@
 name: server_deployment
 on:
-    workflow_dispatch:
+    workflow_call:
         inputs:
             docker-tag:
                 required: true
                 type: string
+        secrets:
+            SERVER_HOST:
+                required: true
+            SERVER_SSH_KEY:
+                required: true
+            SERVER_SSH_USER:
+                required: true
+            DOCKER_PASSWORD:
+                required: true
 
 jobs:
     server_deployment:
