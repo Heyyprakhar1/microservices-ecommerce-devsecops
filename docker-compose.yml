@@ -33,7 +33,7 @@ services:
        - "5001:5001"
 
   product-service:
-    image: ${DOCKER_USER}/e-commerce-site-project-prod-service:${DOCKER_TAG:-latest}
+    image: ${DOCKER_USER}/e-commerce-site-project-product-service:${DOCKER_TAG:-latest}
     container_name: prod-service
     environment:
         DATABASE_URL: mysql+pymysql://user:password@mysql:3306/authdb
