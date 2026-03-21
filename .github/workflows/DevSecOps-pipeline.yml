@@ -18,13 +18,7 @@ jobs:
 
     docker-build-push:
         needs:
-            [
-                code-quality-scan,
-                dockerfile-scan,
-                image-scan,
-                secrets-scan,
-                dependency-scan,
-            ]
+            [code-quality-scan, dockerfile-scan, secrets-scan, dependency-scan]
         uses: ./.github/workflows/docker-build-push.yml
         secrets: inherit
 
