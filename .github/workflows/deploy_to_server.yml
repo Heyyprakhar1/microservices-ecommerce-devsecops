@@ -42,5 +42,5 @@ jobs:
                       echo "Running the app"
                       export DOCKER_USER="${{ vars.DOCKER_USER}}"
                       export DOCKER_TAG="${{ inputs.docker-tag }}"
-                      echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ vars.DOCKER_USER }} --password-stdin
-                      cd ~/Project && docker-compose up -d --force-recreate --pull always
+                      echo "${{ secrets.DOCKER_PASSWORD }}" | /usr/bin/docker login --username ${{ vars.DOCKER_USER }} --password-stdin
+                      cd ~/Project && /usr/bin/docker compose up --detach --force-recreate --pull always
