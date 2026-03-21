@@ -23,7 +23,11 @@ jobs:
         secrets: inherit
 
     image-scan:
+        needs: docker-build-push
         uses: ./.github/workflows/image-scan.yml
+        with:
+            docker-tag: ${{ github.sha }}
+        secrets: inherit
 
     deploy-to-server:
         needs: image-scan

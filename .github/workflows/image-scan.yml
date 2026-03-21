@@ -1,5 +1,10 @@
 name: image-scan
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      docker-tag:
+        required: true
+        type: string
 
 jobs:
   image-scan:
@@ -13,18 +18,18 @@ jobs:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: pull auth-service image
-        run: docker pull ${{ vars.DOCKER_USER}}/e-commerce-site-project-auth-service:v3
+        run: docker pull ${{ vars.DOCKER_USER}}/e-commerce-site-project-auth-service:${{ inputs.docker-tag }}
 
       - name: pull order-service image
-        run: docker pull ${{ vars.DOCKER_USER}}/e-commerce-site-project-order-service:v3
+        run: docker pull ${{ vars.DOCKER_USER}}/e-commerce-site-project-order-service:${{ inputs.docker-tag }}
 
       - name: pull product-service image
-        run: docker pull ${{ vars.DOCKER_USER}}/e-commerce-site-project-product-service:v3
+        run: docker pull ${{ vars.DOCKER_USER}}/e-commerce-site-project-product-service:${{ inputs.docker-tag }}
 
       - name: scan-auth-service
         uses: aquasecurity/trivy-action@0.35.0
         with:
-          image-ref: ${{ vars.DOCKER_USER }}/e-commerce-site-project-auth-service:v3
+          image-ref: ${{ vars.DOCKER_USER }}/e-commerce-site-project-auth-service:${{ inputs.docker-tag }}
           format: table
           severity: CRITICAL,HIGH
           exit-code: 1
@@ -34,7 +39,7 @@ jobs:
       - name: scan-order-service
         uses: aquasecurity/trivy-action@0.35.0
         with:
-          image-ref: ${{ vars.DOCKER_USER }}/e-commerce-site-project-order-service:v3
+          image-ref: ${{ vars.DOCKER_USER }}/e-commerce-site-project-order-service:${{ inputs.docker-tag }}
           format: table
           severity: CRITICAL,HIGH
           exit-code: 1
@@ -44,7 +49,7 @@ jobs:
       - name: scan-product-service
         uses: aquasecurity/trivy-action@0.35.0
         with:
-          image-ref: ${{ vars.DOCKER_USER }}/e-commerce-site-project-product-service:v3
+          image-ref: ${{ vars.DOCKER_USER }}/e-commerce-site-project-product-service:${{ inputs.docker-tag }}
           format: table
           severity: CRITICAL,HIGH
           exit-code: 1
