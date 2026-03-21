@@ -20,6 +20,8 @@ jobs:
         needs:
             [code-quality-scan, dockerfile-scan, secrets-scan, dependency-scan]
         uses: ./.github/workflows/docker-build-push.yml
+        with:
+            docker-tag: ${{ github.sha }}
         secrets: inherit
 
     image-scan:
