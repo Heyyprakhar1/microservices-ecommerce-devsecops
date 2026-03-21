@@ -55,8 +55,8 @@ jobs:
           context: ./services/order-service
           push: true
           tags: |
-            ${{ vars.DOCKER_USER }}/order-service:latest
-            ${{ vars.DOCKER_USER }}/order-service:${{ github.sha }}
+            ${{ vars.DOCKER_USER }}/e-commerce-site-project-order-service:latest
+            ${{ vars.DOCKER_USER }}/e-commerce-site-project-order-service:${{ inputs.docker-tag }}
 
   build-product:
     runs-on: ubuntu-latest
@@ -76,5 +76,5 @@ jobs:
           context: ./services/product-service
           push: true
           tags: |
-            ${{ vars.DOCKER_USER }}/product-service:latest
-            ${{ vars.DOCKER_USER }}/product-service:${{ github.sha }}
+            ${{ vars.DOCKER_USER }}/e-commerce-site-project-order-service:latest
+            ${{ vars.DOCKER_USER }}/e-commerce-site-project-order-service:${{ inputs.docker-tag }}
