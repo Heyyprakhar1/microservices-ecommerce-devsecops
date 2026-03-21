@@ -43,5 +43,4 @@ jobs:
                       export DOCKER_USER="${{ vars.DOCKER_USER}}"
                       export DOCKER_TAG="${{ inputs.docker-tag }}"
                       echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ vars.DOCKER_USER }} --password-stdin
-                      cd ~/Project 
-                      docker-compose down && docker-compose up -d --force-recreate --pull always
+                      cd ~/Project && docker-compose up -d --force-recreate --pull always
