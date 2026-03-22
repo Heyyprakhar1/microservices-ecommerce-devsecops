@@ -1,4 +1,4 @@
-name: server_deployment
+name: server_deployment #workflow-name
 on:
     workflow_call:
         inputs:
@@ -15,7 +15,7 @@ on:
             DOCKER_PASSWORD:
                 required: true
 
-jobs:
+jobs: #Job-name
     server_deployment:
         runs-on: ubuntu-latest
         steps:
