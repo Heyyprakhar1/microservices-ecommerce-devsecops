@@ -1,4 +1,4 @@
-# Ecommerce Platform
+# E-commerce Platform
 
 A microservices-based ecommerce backend built to practice real DevOps workflows — Dockerized services, a DevSecOps CI/CD pipeline, and Kubernetes deployment.
 
@@ -11,7 +11,7 @@ Not a tutorial project. The goal was to build something that would hold up in a 
 Three independent Flask services, each with its own MySQL database:
 
 - **Auth Service** (port 5001) — register, login, JWT token generation and verification
-- **Product Service** (port 5002) — product catalog, inventory CRUD
+- **Product Service** (port 5002) — product catalogue, inventory CRUD
 - **Order Service** (port 5003) — place and track orders
 
 Traffic routes through an **Nginx API Gateway** as a single entry point.
@@ -40,12 +40,12 @@ Traffic routes through an **Nginx API Gateway** as a single entry point.
 **Prerequisites:** Docker and Docker Compose installed.
 
 ```bash
-git clone https://github.com/Heyyprakhar1/e-commerce-site-project.git
-cd e-commerce-site-project
+git clone https://github.com/Heyyprakhar1/microservices-ecommerce-devsecops.git
+cd microservices-ecommerce-devsecops
 docker compose up --build -d
 ```
 
-All three services and MySQL start automatically. The `init.sql` script creates the three databases on first run.
+All three services and MySQL start automatically. The `init.sql` script creates the three databases on the first run.
 
 **Quick test:**
 
@@ -53,7 +53,7 @@ All three services and MySQL start automatically. The `init.sql` script creates 
 # Register
 curl -X POST http://localhost:5001/api/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"username":"prakhar","email":"p@test.com","password":"test123"}'
+  -d '{"username": "prakhar", "email": "p@test.com", "password": "test123"}'
 
 # Store token
 TOKEN=$(curl -s -X POST http://localhost:5001/api/auth/login \
@@ -63,8 +63,8 @@ TOKEN=$(curl -s -X POST http://localhost:5001/api/auth/login \
 # Create a product
 curl -X POST http://localhost:5002/api/products/ \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{"name":"Nike Shoes","price":99.99,"stock":50,"category":"footwear"}'
+  -H "Authorisation: Bearer $TOKEN" \
+  -d '{"name": "Nike Shoes", "price":99.99, "stock":50, "category": "footwear"}'
 ```
 
 ---
