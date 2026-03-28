@@ -1,0 +1,29 @@
+kind: Deployment
+apiVersion: apps/v1
+
+metadata:
+  name: auth-deploy
+  namespace: online-shop-ns
+
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: heyyprakhar1/e-commerce-site-project-auth-service:latest
+          ports:
+            - containerPort: 5001
+          env:          
+            - name: DATABASE_URL
+              value: "mysql+pymysql://user:password@mysql:3306/authdb"
+            - name: JWT_SECRET_KEY
+              value: "super-secret-change-in-prod"
