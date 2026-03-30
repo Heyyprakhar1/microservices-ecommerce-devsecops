@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: prod-svc
+  namespace: online-shop-ns
+
+spec:
+  selector:
+    app: product
+  ports:
+    - port: 5003
+      targetPort: 5003
+  type: ClusterIP

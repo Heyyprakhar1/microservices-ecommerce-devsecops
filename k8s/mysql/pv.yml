@@ -1,0 +1,9 @@
+kind: PersistentVolume
+apiVersion: v1
+
+metadata:
+  name: mysql-pv
+  namespace: online-shop-ns
+
+spec:
+  storageClassName:
