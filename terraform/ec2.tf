@@ -7,7 +7,7 @@ resource "aws_vpc" "my" {
 resource "aws_subnet" "my" {
     vpc_id            = aws_vpc.my.id
     cidr_block        = var.aws_subnet_cidr
-    availability_zone = "eu-west-1a"
+    map_public_ip_on_launch = true
     tags = {
         Name = var.aws_subnet_name
     }
@@ -15,11 +15,22 @@ resource "aws_subnet" "my" {
 resource "aws_internet_gateway" "my" {
     vpc_id = aws_vpc.my.id
 }
+resource "aws_route_table" "my" {
+    vpc_id = aws_vpc.my.id
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.my.id
+    }
+}
+resource "aws_route_table_association" "my" {
+    subnet_id      = aws_subnet.my.id
+    route_table_id = aws_route_table.my.id
+}
 resource "aws_key_pair" "my" {
     key_name   = "online-shop-key"
     public_key = file(var.aws_key_pair_public_key)
     tags = {
-        Name = var.aws_key_pair_public_key
+        Name = "online-shop-key"
     }
 }
 resource "aws_security_group" "my" {
@@ -46,16 +57,18 @@ resource "aws_security_group" "my" {
     }
 }
 resource "aws_instance" "my" {
-    ami           = data.aws_ami.amazon_linux.id
-    count         = length(var.aws_instance_types)
-    instance_type = var.aws_instance_types[count.index]
+    for_each      = var.instances
+    ami           = each.value.ami_id
+    key_name      = aws_key_pair.my.key_name
+    subnet_id     = aws_subnet.my.id
     vpc_security_group_ids = [aws_security_group.my.id]
-    tags = {
-        Name = "${var.aws_instance_name}-${count.index}"
+    instance_type = each.value.instance_type
+    root_block_device {
+        volume_size = 10
+        volume_type = "gp3"
     }
-}
-resource "aws_ami_from_instance" "my" {
-  count              = length(aws_instance.my)
-  name               = "online-shop-ami-${count.index}"
-  source_instance_id = aws_instance.my[count.index].id
+    tags = {
+        Name = each.key
+        OsFamily = each.value.os_family
+    }
 }

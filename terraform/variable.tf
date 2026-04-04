@@ -28,32 +28,37 @@ variable "aws_key_pair_public_key" {
     type        = string
     default     = "online-shop-key.pub"
 }
-variable "aws_key_pair_private_key" {
-    description = "The private key for the AWS key pair"
-    type        = string
-    default     = "online-shop-key.pem"
-}
 variable "aws_security_group_name" {
     description = "The name of the security group"
     type        = string
     default     = "online-shop-sg"
 }
-variable "aws_instance_types" {
-    description = "List of instance types"
-    type        = list(string)
-    default     = ["t2.micro", "t2.small", "t2.medium"]
-}
-variable "aws_instance_name" {
-    description = "The name of the EC2 instance"
-    type        = string
-    default     = "online-shop-instance"
-}
-data "aws_ami" "amazon_linux" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*"]
-  }
+variable "instances" {
+    description = "Map of instance names to their AmI IDs and SSH users & OS family"
+    type = map(object({
+        ami_id   = string
+        ssh_user = string
+        os_family = string
+        instance_type = string
+    }))
+    default = {
+        "master-ubuntu" = {
+            ami_id   = "ami-0324bce2436ce02b2"
+            ssh_user = "ubuntu"
+            os_family = "ubuntu"
+            instance_type  = "t2.micro"
+        },
+        "worker-linux" = {
+            ami_id   = "ami-0762bad84218d1ffa"
+            ssh_user = "ec2-user"
+            os_family = "linux"
+            instance_type  = "t2.small"
+        },
+        "worker-ubuntu" = {
+            ami_id   = "ami-0324bce2436ce02b2"
+            ssh_user = "ubuntu"
+            os_family = "ubuntu"
+            instance_type  = "t2.medium"
+        }
+    }
 }
