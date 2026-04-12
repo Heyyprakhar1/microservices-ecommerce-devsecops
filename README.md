@@ -1,222 +1,257 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:2496ED,100:326CE5&height=160&section=header&text=Microservices%20E-Commerce%20Platform&fontSize=32&fontColor=ffffff&fontAlignY=45&desc=Docker%20Compose%20%7C%20Service%20Mesh%20%7C%20DevSecOps%20%7C%2060%25%20Smaller%20Images&descSize=13&descAlignY=68&descColor=d0e8ff" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:2496ED,100:326CE5&height=160&section=header&text=Microservices%20E-Commerce%20Platform&fontSize=32&fontColor=ffffff&fontAlignY=45&desc=Flask%20%7C%20MySQL%20%7C%20Docker%20%7C%20Kubernetes%20%7C%20DevSecOps%20%7C%20Google%20OAuth&descSize=13&descAlignY=68&descColor=d0e8ff" width="100%"/>
 
-# 🛒 Containerized Microservices E-Commerce Platform
-### DevSecOps | Docker Compose | Service Mesh | Zero Security Defect Escapes
+# 🛒 Microservices E-Commerce Platform
+### DevSecOps · Kubernetes · Google OAuth · 7-Stage CI/CD Pipeline
 
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](.)
-[![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?style=flat-square&logo=docker&logoColor=white)](.)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat-square&logo=kubernetes&logoColor=white)](.)
+[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)](.)
 [![Trivy](https://img.shields.io/badge/Trivy-1904DA?style=flat-square&logo=aquasecurity&logoColor=white)](.)
 [![Gitleaks](https://img.shields.io/badge/Gitleaks-181717?style=flat-square&logo=github&logoColor=white)](.)
 [![Hadolint](https://img.shields.io/badge/Hadolint-2496ED?style=flat-square&logo=docker&logoColor=white)](.)
-[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)](.)
 
 </div>
 
 ---
 
-## What this project is
+## What this is
 
-A **containerized microservices e-commerce platform** built with Docker Compose, with end-to-end DevSecOps scanning integrated into every stage of the delivery pipeline. Three independently deployable services — frontend, backend, database — each running in isolated network segments with least-privilege inter-service communication.
+Three Flask microservices — Auth, Product, Order — each with its own MySQL database, running behind an Nginx API gateway. Built to practice real DevOps workflows, not follow a tutorial.
 
-The focus: **container security done right at the image and network layer** — not as an afterthought.
+Every push to `main` goes through a 7-stage DevSecOps pipeline. Nothing reaches the server unless all stages pass. Auth supports both password login and Google OAuth.
 
----
-
-## Architecture
-
-```
-                    ┌──────────────────────────────────────┐
-                    │         Docker Compose Stack          │
-                    │                                      │
-                    │  ┌────────────────────────────────┐  │
-                    │  │     frontend-network (bridge)  │  │
-                    │  │                                │  │
-                    │  │   ┌─────────────────────┐      │  │
-                    │  │   │    Frontend          │      │  │
-                    │  │   │  (React / Nginx)     │      │  │
-                    │  │   │  Distroless base     │      │  │
-           ─────────────── │  Port 3000 exposed  │      │  │
-           Internet │  │   └──────────┬──────────┘      │  │
-                    │  └─────────────┼────────────────  │  │
-                    │                │ API calls         │  │
-                    │  ┌─────────────┼────────────────┐  │  │
-                    │  │  backend-network (bridge)    │  │  │
-                    │  │             │                │  │  │
-                    │  │   ┌─────────▼───────────┐   │  │  │
-                    │  │   │    Backend           │   │  │  │
-                    │  │   │  (Node.js / Python)  │   │  │  │
-                    │  │   │  Distroless base     │   │  │  │
-                    │  │   │  NOT exposed to web  │   │  │  │
-                    │  │   └──────────┬───────────┘   │  │  │
-                    │  └─────────────┼───────────────-┘  │  │
-                    │                │ DB queries         │  │
-                    │  ┌─────────────┼────────────────┐  │  │
-                    │  │    db-network (bridge)        │  │  │
-                    │  │             │                 │  │  │
-                    │  │   ┌─────────▼───────────┐    │  │  │
-                    │  │   │    Database          │    │  │  │
-                    │  │   │  (PostgreSQL/MySQL)  │    │  │  │
-                    │  │   │  Named volume        │    │  │  │
-                    │  │   │  NOT exposed         │    │  │  │
-                    │  │   └─────────────────────┘    │  │  │
-                    │  └───────────────────────────── ┘  │  │
-                    └──────────────────────────────────────┘
-
-Named volumes: db_data (persistent), backend_logs
-```
+Not a toy project. The goal was something that would hold up in a job interview.
 
 ---
 
-## DevSecOps scanning pipeline
+## Services
 
-```
-Every commit triggers:
-
-┌─────────────────────────────────────────────────────────┐
-│                    Security scan chain                  │
-│                                                         │
-│  1. Gitleaks      → Secret detection in code/history   │
-│  2. Hadolint      → Dockerfile best-practice linting   │
-│  3. Build images  → Multi-stage, distroless base       │
-│  4. Trivy scan    → CVE scan on each built image        │
-│                     HIGH/CRITICAL = pipeline stops      │
-│  5. Gate pass     → Images tagged + pushed to registry  │
-│  6. Deploy        → docker-compose up with new images   │
-└─────────────────────────────────────────────────────────┘
-```
-
-**Zero security defect escapes** — if Trivy finds a HIGH or CRITICAL CVE in any of the 3 images, nothing gets pushed or deployed.
+| Service | Port | What it does |
+|---|---|---|
+| Auth Service | 5001 | Register, login, Google OAuth, JWT tokens |
+| Product Service | 5002 | Product catalog, inventory CRUD |
+| Order Service | 5003 | Place and track orders |
+| Nginx Gateway | 80 | Single entry point for all traffic |
 
 ---
 
-## Key outcomes
+## Tech stack
 
-| Metric | Result |
+| Layer | Tools |
 |---|---|
-| Docker image size reduction | **60%** via multi-stage + distroless bases |
-| Security defect escape rate | **Zero** |
-| Attack surface reduction | Eliminated all unnecessary runtime dependencies |
-| Network isolation | **3 isolated bridge networks** — zero lateral movement possible |
-| Data durability | **Zero data loss** during container restarts (named volumes) |
-| Scan tools integrated | **3** (Trivy, Hadolint, Gitleaks) at every pipeline stage |
+| Services | Python, Flask, SQLAlchemy |
+| Auth | JWT + Google OAuth 2.0 (Authlib) |
+| Database | MySQL 8.0 |
+| Containers | Docker, Docker Compose |
+| Registry | Docker Hub |
+| CI/CD | GitHub Actions (7 workflows) |
+| Security | Trivy, Gitleaks, Hadolint, Bandit, pip-audit |
+| Orchestration | Kubernetes (kind — local), EKS (planned) |
+| GitOps | Argo CD (planned) |
+| Monitoring | Prometheus + Grafana (planned) |
 
 ---
 
-## Image optimization — how 60% size reduction was achieved
+## Auth — two ways to log in
 
-**Before:** Standard base images (node:18, python:3.11) — ~1.2GB each
+Standard email/password registration and login. Plus Google OAuth — hit `/api/auth/google/login` in a browser, sign in with Google, get a JWT back. Same token format either way, so the rest of the system doesn't care how you authenticated.
 
-**After:** Multi-stage builds + distroless bases — ~180-250MB each
+```
+GET  /api/auth/google/login      → redirects to Google
+GET  /api/auth/google/callback   → Google returns here → JWT issued
+```
+
+Google users get created automatically on first login. Password field stays null for them — trying to log in via password with a Google account returns 401.
+
+---
+
+## API routes
+
+### Auth — `/api/auth`
+
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| GET | `/health` | No | Health check |
+| POST | `/register` | No | Create account |
+| POST | `/login` | No | Get JWT token |
+| POST | `/verify` | Bearer | Validate token |
+| GET | `/google/login` | No | Start Google OAuth |
+| GET | `/google/callback` | No | Google OAuth callback |
+
+### Product — `/api/products`
+
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| GET | `/health` | No | Health check |
+| GET | `/` | No | List all products |
+| GET | `/<id>` | No | Get single product |
+| POST | `/` | JWT | Add product |
+| PUT | `/<id>` | JWT | Update product |
+| DELETE | `/<id>` | JWT | Delete product |
+
+### Order — `/api/orders`
+
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| GET | `/health` | No | Health check |
+| POST | `/` | JWT | Place order |
+| GET | `/` | JWT | Get my orders |
+| GET | `/<id>` | JWT | Get single order |
+| PUT | `/<id>/status` | JWT | Update order status |
+
+---
+
+## DevSecOps pipeline
+
+```
+Push to main
+     │
+     ├── code-quality-scan   (Flake8 + Bandit)
+     ├── dependency-scan     (pip-audit)
+     ├── secrets-scan        (Gitleaks)
+     ├── dockerfile-scan     (Hadolint)
+     │
+     ▼  all pass
+     │
+     ├── docker-build-push   (build + push to Docker Hub)
+     │
+     ▼
+     ├── image-scan          (Trivy — HIGH/CRITICAL CVEs block deploy)
+     │
+     ▼
+     └── deploy-to-server    (SSH → docker compose up)
+```
+
+**Stats:** 7 workflows · 69+ commits · ~3m 14s average end-to-end · zero secrets leaked
+
+---
+
+## Dockerfiles
+
+Multi-stage builds, non-root users across all three services.
 
 ```dockerfile
-# Stage 1 — Build (full toolchain, not shipped)
-FROM node:18-alpine AS builder
+# Stage 1 — builder
+FROM python:3.12-slim AS builder
 WORKDIR /app
-COPY package*.json .
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
+COPY requirements.txt .
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-# Stage 2 — Runtime (distroless, no shell, no package manager)
-FROM gcr.io/distroless/nodejs18-debian11
+# Stage 2 — runtime, non-root
+FROM python:3.12-slim
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-EXPOSE 3000
-CMD ["dist/index.js"]
+COPY --from=builder /install /usr/local
+COPY app/ ./app/
+COPY run.py .
+RUN chown -R appuser:appgroup /app
+USER appuser
 ```
 
-Benefits of distroless:
-- No shell → no shell injection attacks
-- No package manager → no `apt`/`apk` abuse
-- Minimal OS surface → fewer CVEs for Trivy to find
-- Smaller image → faster pulls, less registry storage
-
 ---
 
-## Service mesh networking — least-privilege design
+## Running locally
 
-Each service tier lives in its **own isolated bridge network**:
-
-| Network | Members | Allowed traffic |
-|---|---|---|
-| `frontend-network` | Frontend only | Inbound from internet (port 3000) |
-| `backend-network` | Frontend + Backend | Frontend → Backend API calls only |
-| `db-network` | Backend + Database | Backend → DB queries only |
-
-**What this prevents:**
-- Frontend cannot directly query the database (lateral movement blocked)
-- Database is never exposed to the internet (zero public access)
-- A compromised frontend container cannot reach the DB layer
-
----
-
-## How to run
+**Prerequisites:** Docker and Docker Compose installed.
 
 ```bash
-# Clone the repo
-git clone https://github.com/Heyyprakhar1/<repo-name>
-cd <repo-name>
-
-# Build and start all services
-docker-compose up --build -d
-
-# Check running services
-docker-compose ps
-
-# View logs
-docker-compose logs -f backend
-
-# Stop everything (data persists in named volumes)
-docker-compose down
-
-# Stop and remove volumes (full reset)
-docker-compose down -v
+git clone https://github.com/Heyyprakhar1/microservices-ecommerce-devsecops.git
+cd microservices-ecommerce-devsecops
+docker compose up --build -d
 ```
 
----
+All three services and MySQL start automatically. `init.sql` creates the three databases on first run.
 
-## Run security scans locally
+**Quick test:**
 
 ```bash
-# Scan for secrets
-gitleaks detect --source . --verbose
+# Register
+curl -X POST http://localhost:5001/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"prakhar","email":"p@test.com","password":"test123"}'
 
-# Lint all Dockerfiles
-hadolint frontend/Dockerfile
-hadolint backend/Dockerfile
+# Login
+TOKEN=$(curl -s -X POST http://localhost:5001/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"p@test.com","password":"test123"}' | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
 
-# Scan built images for CVEs
-trivy image <repo-name>_frontend
-trivy image <repo-name>_backend
-trivy image <repo-name>_database
+# Google OAuth (open in browser)
+# http://localhost:5001/api/auth/google/login
 
-# Filter by severity
-trivy image --severity HIGH,CRITICAL <repo-name>_backend
+# Create a product
+curl -X POST http://localhost:5002/api/products/ \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"name":"Nike Shoes","price":99.99,"stock":50,"category":"footwear"}'
 ```
 
 ---
 
-## Load and failure testing results
+## Project structure
 
-| Test scenario | Result |
-|---|---|
-| Container restart (backend) | Zero data loss — named volume persisted |
-| Container restart (database) | Zero data loss — volume + restart policy |
-| Network partition (db-network down) | Backend returns 503, frontend unaffected |
-| High load (50 concurrent requests) | All 3 tiers handled without restart |
-| Image rebuild + rolling redeploy | Zero downtime via `docker-compose up --no-deps` |
+```
+microservices-ecommerce-devsecops/
+├── services/
+│   ├── auth-service/
+│   │   ├── app/
+│   │   │   ├── __init__.py
+│   │   │   ├── config.py
+│   │   │   ├── models.py
+│   │   │   └── routes.py
+│   │   ├── Dockerfile
+│   │   ├── requirements.txt
+│   │   └── run.py
+│   ├── product-service/
+│   └── order-service/
+├── k8s/
+│   ├── auth-service/
+│   ├── product-service/
+│   ├── order-service/
+│   ├── mysql/
+│   └── ingress.yaml
+├── .github/
+│   └── workflows/
+│       ├── DevSecOps-pipeline.yml
+│       ├── code_quality.yml
+│       ├── dependency_scan.yml
+│       ├── secrets-scan.yml
+│       ├── dockerfile-scan.yml
+│       ├── docker-build-push.yml
+│       ├── image-scan.yml
+│       └── deploy_to_server.yml
+├── terraform/
+├── docker-compose.yml
+└── init.sql
+```
+
+---
+
+## Status
+
+- ✅ Auth Service (Flask + MySQL + JWT + Google OAuth)
+- ✅ Product Service
+- ✅ Order Service
+- ✅ Multi-stage Dockerfiles (non-root users)
+- ✅ Docker Compose
+- ✅ DevSecOps Pipeline (7 stages, 69+ runs)
+- ✅ Kubernetes manifests (HPA, Ingress, Namespaces)
+- ✅ Terraform (AWS EC2 provisioning)
+- ⏳ EKS deployment
+- ⏳ Helm Charts
+- ⏳ Argo CD (GitOps)
+- ⏳ Prometheus + Grafana monitoring
+- ⏳ AI Chatbot service (Ollama)
 
 ---
 
 <div align="center">
 
 **Built by [Prakhar Srivastava](https://github.com/Heyyprakhar1)**
-· [Portfolio](https://prakharsrivastava-devops.netlify.app/)
+· [Portfolio](https://prakharsrivastavadevops.netlify.app/)
 · [LinkedIn](https://linkedin.com/in/heyyprakhar1)
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:326CE5,100:2496ED&height=100&section=footer&text=Containers%20Done%20Right&fontSize=20&fontColor=ffffff&fontAlignY=65&desc=Distroless%20images.%20Isolated%20networks.%20Zero%20defect%20escapes.&descSize=12&descColor=d0e8ff&descAlignY=85" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:326CE5,100:2496ED&height=100&section=footer&text=Not%20a%20tutorial%20project&fontSize=20&fontColor=ffffff&fontAlignY=65&desc=Built%20to%20break%2C%20debug%2C%20and%20understand%20why.&descSize=12&descColor=d0e8ff&descAlignY=85" width="100%"/>
 
 </div>
