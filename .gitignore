@@ -1,10 +1,8 @@
-**/venv/
-**/__pycache__/
-*.pyc
-*.pyo
 .env
-**/.env
-.vscode/
-.idea/
-.DS_Store
-Thumbs.db
+*.env
+services/auth-service/.env
+terraform/.terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/online-shop-key
+terraform/online-shop-key.pub

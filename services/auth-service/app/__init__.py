@@ -2,9 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from .config import Config
 
-
 db = SQLAlchemy()
-
 
 def create_app():
     app = Flask(__name__)
@@ -12,8 +10,9 @@ def create_app():
 
     db.init_app(app)
 
-    from .routes import auth_bp
+    from .routes import auth_bp, init_oauth   
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    init_oauth(app)                            
 
     with app.app_context():
         db.create_all()

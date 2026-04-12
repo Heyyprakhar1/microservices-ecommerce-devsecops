@@ -20,11 +20,14 @@ services:
       interval: 10s
     
   auth-service:
+    build: ./services/auth-service
     image: ${DOCKER_USER}/e-commerce-site-project-auth-service:${DOCKER_TAG:-latest}
     container_name: auth-service
     environment:
       DATABASE_URL: mysql+pymysql://user:password@mysql:3306/authdb
       JWT_SECRET_KEY: super-secret-change-in-prod
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
     restart: always
     depends_on:
        mysql:
