@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, redirect
+from flask import Blueprint, request, jsonify
 from . import db
 from .models import User
 from authlib.integrations.flask_client import OAuth
