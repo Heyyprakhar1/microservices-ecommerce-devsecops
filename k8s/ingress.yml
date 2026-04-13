@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: online-shop-ingress
+  namespace: online-shop-ns
+  annotations:
+    ginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - http:
+        paths:
+          - pathType: Prefix
+            path: /api/auth
+            backend:
+              service:
+                name: auth-svc
+                port:
+                  number: 5001
+          - pathType: Prefix
+            path: /api/products
+            backend:
+              service:
+                name: prod-svc
+                port:
+                  number: 5002
+          - pathType: Prefix
+            path: /api/orders
+            backend:
+              service:
+                name: order-svc
+                port:
+                  number: 5003

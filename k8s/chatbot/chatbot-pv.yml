@@ -10,7 +10,7 @@ metadata:
 spec:
   storageClassName: manual #manual used for KinD Cluster, Auto for EKS
   capacity:
-    storage: 5Gi
+    storage: 20Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
