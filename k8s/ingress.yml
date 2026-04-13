@@ -4,7 +4,7 @@ metadata:
   name: online-shop-ingress
   namespace: online-shop-ns
   annotations:
-    ginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
     - http:
