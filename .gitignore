@@ -9,3 +9,4 @@ terraform/online-shop-key.pub
 k8s/auth-services/secrets.yml
 k8s/order-services/secrets.yml
 k8s/product-services/secrets.yml
+k8s/mysql/secrets.yml
