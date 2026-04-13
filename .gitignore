@@ -6,3 +6,6 @@ terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
 terraform/online-shop-key
 terraform/online-shop-key.pub
+k8s/auth-services/secrets.yml
+k8s/order-services/secrets.yml
+k8s/product-services/secrets.yml
