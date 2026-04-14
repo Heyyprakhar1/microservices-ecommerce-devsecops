@@ -1,21 +1,17 @@
 kind: Deployment
 apiVersion: apps/v1
-
 metadata:
   name: order-deploy
   namespace: online-shop-ns
-
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: order
-
   template:
     metadata:
       labels:
         app: order
-
     spec:
       containers:
         - name: order
@@ -24,9 +20,25 @@ spec:
             - containerPort: 5003
           env:
             - name: DATABASE_URL
-              value: "mysql+pymysql://user:password@mysql-svc.online-shop-ns.svc.cluster.local:3306/authdb"
+              value: "mysql+pymysql://user:password@mysql-svc.online-shop-ns.svc.cluster.local:3306/orderdb"
             - name: JWT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: order-secrets
                   key: JWT_SECRET_KEY
+            - name: PRODUCT_SERVICE_URL
+              value: "http://prod-svc.online-shop-ns.svc.cluster.local:5002"
+          livenessProbe:
+            httpGet:
+              path: /api/orders/health
+              port: 5003
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/orders/health
+              port: 5003
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3

@@ -1,32 +1,42 @@
 kind: Deployment
 apiVersion: apps/v1
-
 metadata:
   name: prod-deploy
   namespace: online-shop-ns
-
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: prod
-
   template:
     metadata:
       labels:
         app: prod
-
     spec:
       containers:
         - name: prod
           image: heyyprakhar1/e-commerce-site-project-product-service:latest
-          ports: 
+          ports:
             - containerPort: 5002
           env:
             - name: DATABASE_URL
-              value: "mysql+pymysql://user:password@mysql-svc.online-shop-ns.svc.cluster.local:3306/authdb"
+              value: "mysql+pymysql://user:password@mysql-svc.online-shop-ns.svc.cluster.local:3306/productdb"
             - name: JWT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: prod-secrets
                   key: JWT_SECRET_KEY
+          livenessProbe:
+            httpGet:
+              path: /api/products/health
+              port: 5002
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/products/health
+              port: 5002
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3

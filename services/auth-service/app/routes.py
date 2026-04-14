@@ -78,7 +78,10 @@ def verify_token():
 
 @auth_bp.route("/google/login", methods=["GET"])
 def google_login():
-    redirect_uri = "http://localhost:5001/api/auth/google/callback"
+    redirect_uri = current_app.config.get(
+        "GOOGLE_REDIRECT_URI",
+        "http://localhost:5001/api/auth/google/callback"
+    )
     return oauth.google.authorize_redirect(redirect_uri)
 
 @auth_bp.route("/google/callback", methods=["GET"])

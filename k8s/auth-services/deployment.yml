@@ -27,3 +27,5 @@ spec:
                 secretKeyRef:
                   name: auth-secrets
                   key: JWT_SECRET_KEY
+            - name: GOOGLE_REDIRECT_URI
+              value: "http://<your-server-ip>:5001/api/auth/google/callback"
