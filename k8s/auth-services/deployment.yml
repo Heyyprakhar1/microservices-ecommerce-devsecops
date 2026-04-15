@@ -13,6 +13,14 @@ spec:
       labels:
         app: auth
     spec:
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z mysql-svc 3306; do echo "waiting for mysql..."; sleep 2; done']
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
       containers:
         - name: auth
           image: heyyprakhar1/e-commerce-site-project-auth-service:latest
@@ -28,4 +36,18 @@ spec:
                   name: auth-secrets
                   key: JWT_SECRET_KEY
             - name: GOOGLE_REDIRECT_URI
-              value: "http://<your-server-ip>:5001/api/auth/google/callback"
+              value: "http://localhost:8081/api/auth/google/callback"
+          livenessProbe:
+            httpGet:
+              path: /api/auth/health
+              port: 5001
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/auth/health
+              port: 5001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
