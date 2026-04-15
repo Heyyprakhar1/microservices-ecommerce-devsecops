@@ -1,0 +1,37 @@
+kind: PersistentVolume
+apiVersion: v1
+
+metadata:
+  name: db-pv
+  namespace: online-shop-ns
+  labels:
+    app: mysql
+
+spec:
+  storageClassName: manual #manual used for KinD Cluster, Auto for EKS
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/mysql-data
+
+      ---
+
+kind: PersistentVolume
+apiVersion: v1
+
+metadata:
+  name: chatbot-pv
+  namespace: online-shop-ns
+  labels:
+    app: chatbot
+
+spec:
+  storageClassName: manual #manual used for KinD Cluster, Auto for EKS
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/mysql-chatbot
