@@ -8,6 +8,9 @@ metadata:
     app: database
 spec:
   replicas: 1
+
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: database
@@ -42,14 +45,25 @@ spec:
                 secretKeyRef:
                   name: online-shop-secret
                   key: MYSQL_PASSWORD
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           volumeMounts:
             - name: mysql-storage
               mountPath: /var/lib/mysql
             - name: init-script 
               mountPath: /docker-entrypoint-initdb.d
-
           readinessProbe:
             exec: 
+              command: ["mysqladmin", "ping", "-h", "localhost" ]
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            exec:
               command: ["mysqladmin", "ping", "-h", "localhost" ]
             initialDelaySeconds: 15
             periodSeconds: 10
